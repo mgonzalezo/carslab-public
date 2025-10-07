@@ -11,7 +11,7 @@ spec:
   project: ztp-app-project
   source:
     path: rhocp-clusters/fiesta.cars2.lab/site-configs
-    repoURL: https://github.com/novacain1/carslab-public
+    repoURL: https://github.com/mgonzalezo/carslab-public
     targetRevision: main
     # uncomment the below plugin if you will be adding the plugin binaries in the same repo->dir where
     # the sitconfig.yaml exist AND use the ../../hack/patch-argocd-dev.sh script to re-patch the deployment-repo-server

@@ -2,4 +2,4 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: fiesta
+  name: du1-1-fiesta-cars2-lab
