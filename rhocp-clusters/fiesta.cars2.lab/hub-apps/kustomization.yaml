@@ -4,3 +4,4 @@ kind: Kustomization
 
 resources:
   - cars2-clusters-fiesta-app.yaml
+  - cars2-policies-app.yaml
