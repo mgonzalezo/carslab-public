@@ -11,8 +11,8 @@ spec:
     namespace: 'telco-gitops'
     server: 'https://kubernetes.default.svc'
   source:
-    repoURL: 'https://github.com/redhat-partner-solutions/carslab-public.git'
-    targetRevision: HEAD
+    repoURL: 'https://github.com/mgonzalezo/carslab-public.git'
+    targetRevision: main
     path: rhocp-clusters/mgmt/nova.cars.lab
     directory:
       recurse: false
