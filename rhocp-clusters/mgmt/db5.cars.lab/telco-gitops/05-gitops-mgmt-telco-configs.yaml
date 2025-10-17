@@ -9,7 +9,7 @@ spec:
     - git:
         directories:
           - path: rhocp-clusters/mgmt/db5.cars.lab/config-*
-        repoURL: 'https://github.com/redhat-partner-solutions/carslab-public.git'
+        repoURL: 'https://github.com/mgonzalezo/carslab-public.git'
         revision: HEAD
   template:
     metadata:
@@ -22,5 +22,5 @@ spec:
       project: default
       source:
         path: '{{path}}'
-        repoURL: 'https://github.com/redhat-partner-solutions/carslab-public.git'
+        repoURL: 'https://github.com/mgonzalezo/carslab-public.git'
         targetRevision: HEAD
