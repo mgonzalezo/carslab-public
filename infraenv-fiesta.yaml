@@ -1,0 +1,117 @@
+---
+# InfraEnv for fiesta SNO cluster
+# This defines the discovery ISO and infrastructure environment
+# Reference: https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html-single/multicluster_engine_operator_with_red_hat_advanced_cluster_management/index#ibio-intro
+
+apiVersion: agent-install.openshift.io/v1beta1
+kind: InfraEnv
+metadata:
+  name: fiesta
+  namespace: du1-1-fiesta-cars2-lab
+  labels:
+    cluster: fiesta
+    site: cars2-lab
+    networkType: dhcp
+spec:
+  # Pull secret for accessing Red Hat registries
+  pullSecretRef:
+    name: assisted-deployment-pull-secret
+
+  # SSH public key for accessing discovery agent
+  sshAuthorizedKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDd7Jj5iFCWv9IHJK9H+2O3lyPs36moAxeAUiHvzRS3uzqGxxB33BnTRBNDKsoDFSGJX0J4bd5b+XyCPdhFOfvn/xhmAcm6d8GALS+139e8d+No8h2QgZy0OVJFp844k4nmz4wew5/+X9DN40ZURYerekbVc58hw1+rTu0uM2jQ0cE2QmEf3qGKHx9UJW8t6IsMzwnrikBH30sYqn2NcBE+/c8JzlLc3PvvenlY0iQkpukI1A5E9GGMR9OS/q+w6FH85zvSgUatOV7Q5lg45QUF+V77DrfX5+niI+NK1g70pRvD8481SAdXrHPB5vK4vQEmJ4pz83IKYHVuPzRnjzYKv1jV33oReyyMqyk44Rsfkxl4i5SJ9z7q/EVmTjvurzD6ofi3Dg0+PL18eTcjuPFdCxSCUFsnr5N9CRHCxHRQpxoZTD7sYD4jDGNygawLvhxcvgKGBZzP53NRCzRFOMFmZsLPLQRaNOsgKRPAohmrn5l8+1xG5ltVauOwAFlKUxk="
+
+  # Additional NTP sources for time synchronization during discovery
+  additionalNTPSources:
+    - clock.cars2.lab
+    - clock-v6.cars2.lab
+
+  # CPU architecture
+  cpuArchitecture: x86_64
+
+  # Network configuration for the discovery ISO
+  # This will be applied when the server boots from the ISO
+  nmStateConfigLabelSelector:
+    matchLabels:
+      cluster: fiesta
+
+---
+# NMStateConfig for fiesta node
+# Defines the network configuration for the discovery agent
+# This ensures the server has network connectivity during discovery
+
+apiVersion: agent-install.openshift.io/v1beta1
+kind: NMStateConfig
+metadata:
+  name: fiesta-nmstate
+  namespace: du1-1-fiesta-cars2-lab
+  labels:
+    cluster: fiesta
+spec:
+  config:
+    interfaces:
+      - name: eno3
+        type: ethernet
+        state: up
+        mac-address: "3c:ec:ef:b6:ce:12"
+        ipv4:
+          enabled: true
+          dhcp: false
+          address:
+            - ip: 192.168.38.144
+              prefix-length: 26
+        ipv6:
+          enabled: true
+          dhcp: false
+          address:
+            - ip: 2600:52:7:300::144
+              prefix-length: 64
+
+    dns-resolver:
+      config:
+        server:
+          - 192.168.38.12
+          - 2600:52:7:38::12
+
+    routes:
+      config:
+        - destination: 0.0.0.0/0
+          next-hop-address: 192.168.38.129
+          next-hop-interface: eno3
+          table-id: 254
+        - destination: ::/0
+          next-hop-address: 2600:52:7:300::1
+          next-hop-interface: eno3
+          table-id: 254
+
+  interfaces:
+    - name: eno3
+      macAddress: "3c:ec:ef:b6:ce:12"
+
+---
+# Summary:
+# ==========
+#
+# This InfraEnv configuration:
+# 1. Creates a standalone discovery ISO (not tied to specific ClusterInstance)
+# 2. ACM automatically uses the latest available RHCOS ISO
+# 3. Provides SSH access to the discovery ISO
+# 4. Configures dual-stack networking (IPv4/IPv6) via NMStateConfig
+# 5. Sets up NTP for time synchronization
+#
+# The InfraEnv will:
+# - Generate a discovery ISO with embedded agent
+# - Provide an ISO download URL for BMC mounting
+# - Boot the server into a discovery agent
+# - The agent will report hardware inventory to ACM
+# - Once ClusterInstance is applied, agent is matched (via MAC) and installation begins
+#
+# To apply:
+#   oc apply -f infraenv-fiesta.yaml
+#
+# To check status:
+#   oc get infraenv fiesta -n du1-1-fiesta-cars2-lab
+#   oc describe infraenv fiesta -n du1-1-fiesta-cars2-lab
+#   oc get nmstateconfig fiesta-nmstate -n du1-1-fiesta-cars2-lab
+#
+# To get ISO URL:
+#   oc get infraenv fiesta -n du1-1-fiesta-cars2-lab -o jsonpath='{.status.isoDownloadURL}'

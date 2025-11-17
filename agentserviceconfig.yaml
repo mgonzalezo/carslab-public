@@ -1,0 +1,75 @@
+---
+# AgentServiceConfig for Assisted Installer Infrastructure
+# This deploys the assisted-service pods required for agent-based installation
+# Reference: https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html-single/multicluster_engine_operator_with_red_hat_advanced_cluster_management/index
+
+apiVersion: agent-install.openshift.io/v1beta1
+kind: AgentServiceConfig
+metadata:
+  name: agent
+  namespace: multicluster-engine
+spec:
+  # Database storage for assisted-service database
+  databaseStorage:
+    storageClassName: lso-filesystemclass
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+
+  # Filesystem storage for assisted-service
+  filesystemStorage:
+    storageClassName: lso-filesystemclass
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 20Gi
+
+  # Image storage for discovery ISO images
+  imageStorage:
+    storageClassName: lso-filesystemclass
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 50Gi
+
+  # RHCOS images for OpenShift 4.18.23
+  osImages:
+    - cpuArchitecture: x86_64
+      openshiftVersion: "4.18"
+      version: "4.18.23"
+      url: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.18/4.18.23/rhcos-4.18.23-x86_64-live.x86_64.iso
+      rootFSUrl: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.18/4.18.23/rhcos-4.18.23-x86_64-live-rootfs.x86_64.img
+
+---
+# Summary:
+# ==========
+#
+# This AgentServiceConfig:
+# 1. Deploys the assisted-installer infrastructure (assisted-service, assisted-image-service)
+# 2. Uses lso-filesystemclass storage (Local Storage Operator)
+# 3. Configures RHCOS 4.18.23 images from Red Hat mirror
+# 4. Required for any agent-based cluster deployment (InfraEnv + ClusterInstance)
+#
+# The AgentServiceConfig will deploy:
+# - assisted-service: Main service that manages cluster installations
+# - assisted-image-service: Service that generates discovery ISOs
+# - Database and storage for assisted-installer data
+#
+# After applying this:
+# - Wait 5-10 minutes for assisted-service pods to deploy
+# - Then InfraEnv will be able to generate discovery ISO
+#
+# To apply:
+#   oc apply -f agentserviceconfig.yaml
+#
+# To check deployment:
+#   oc get agentserviceconfig agent -n multicluster-engine
+#   oc get pods -n assisted-installer
+#   oc get pods -n multicluster-engine | grep assisted
+#
+# To monitor logs:
+#   oc logs -n assisted-installer deployment/assisted-service -f
