@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: du1-1-fiesta-cars2-lab
+  name: fiesta
   labels:
     cluster: fiesta
     site: cars2-lab
