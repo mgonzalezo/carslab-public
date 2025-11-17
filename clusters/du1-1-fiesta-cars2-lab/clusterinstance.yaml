@@ -147,13 +147,20 @@ spec:
   extraManifestsRefs:
     - name: extra-manifests
 
-  # DO NOT specify templateRefs - use default templates for automated BMC provisioning
-  # This enables Metal3 to automatically mount ISO and boot the server
+  # Cluster-level templates - required by API
+  templateRefs:
+    - name: ai-cluster-templates-v1
+      namespace: open-cluster-management
 
   # Node configuration
   nodes:
     - hostName: du1-1.fiesta.cars2.lab
       role: master
+
+      # Node-level templates - required by API
+      templateRefs:
+        - name: ai-node-templates-v1
+          namespace: open-cluster-management
 
       # BMC configuration
       bmcAddress: redfish-virtualmedia://192.168.38.199/redfish/v1/Systems/1/
