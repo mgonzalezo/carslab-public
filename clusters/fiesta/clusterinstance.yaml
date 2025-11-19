@@ -13,6 +13,9 @@ spec:
     - clock.cars2.lab
     - clock-v6.cars2.lab
   cpuArchitecture: x86_64
+  agentLabelSelector:
+    matchLabels:
+      infraenvs.agent-install.openshift.io: fiesta
   nmStateConfigLabelSelector:
     matchLabels:
       cluster: fiesta
