@@ -4,7 +4,7 @@ apiVersion: agent-install.openshift.io/v1beta1
 kind: InfraEnv
 metadata:
   name: fiesta
-  namespace: du1-1-fiesta-cars2-lab
+  namespace: fiesta
 spec:
   pullSecretRef:
     name: assisted-deployment-pull-secret
@@ -23,7 +23,7 @@ apiVersion: agent-install.openshift.io/v1beta1
 kind: NMStateConfig
 metadata:
   name: fiesta-nmstate
-  namespace: du1-1-fiesta-cars2-lab
+  namespace: fiesta
   labels:
     cluster: fiesta
 spec:
@@ -100,7 +100,7 @@ apiVersion: siteconfig.open-cluster-management.io/v1alpha1
 kind: ClusterInstance
 metadata:
   name: fiesta
-  namespace: du1-1-fiesta-cars2-lab
+  namespace: fiesta
   labels:
     cluster: fiesta
     site: cars2-lab

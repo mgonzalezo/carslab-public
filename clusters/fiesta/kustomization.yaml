@@ -4,7 +4,7 @@ kind: Kustomization
 # ConfigMap generator for extra manifests
 configMapGenerator:
   - name: extra-manifests
-    namespace: du1-1-fiesta-cars2-lab
+    namespace: fiesta
     files:
       - extra-manifests/01-container-mount-ns-and-kubelet-conf-master.yaml
       - extra-manifests/03-sctp-machine-config-master.yaml
@@ -22,7 +22,5 @@ generatorOptions:
 # Resources to deploy
 resources:
   - ns.yaml
-  - ns-fiesta.yaml
   - secrets.yaml
-  - secrets-fiesta-ns.yaml
   - clusterinstance.yaml
