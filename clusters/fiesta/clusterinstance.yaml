@@ -53,9 +53,9 @@ spec:
   extraManifestsRefs:
     - name: extra-manifests
 
-  # Cluster-level templates - using IBI (Image-Based Install)
+  # Cluster-level templates - using AI (Agent-Based Install)
   templateRefs:
-    - name: ibi-cluster-templates-v1
+    - name: ai-cluster-templates-v1
       namespace: open-cluster-management
 
   # Node configuration
@@ -63,9 +63,9 @@ spec:
     - hostName: du1-1.fiesta.cars2.lab
       role: master
 
-      # Node-level templates - using IBI (Image-Based Install)
+      # Node-level templates - using AI (Agent-Based Install)
       templateRefs:
-        - name: ibi-node-templates-v1
+        - name: ai-node-templates-v1
           namespace: open-cluster-management
 
       # BMC configuration
