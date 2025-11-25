@@ -1,101 +1,4 @@
 ---
-# InfraEnv for discovery ISO generation
-apiVersion: agent-install.openshift.io/v1beta1
-kind: InfraEnv
-metadata:
-  name: fiesta
-  namespace: fiesta
-spec:
-  pullSecretRef:
-    name: assisted-deployment-pull-secret
-  sshAuthorizedKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDd7Jj5iFCWv9IHJK9H+2O3lyPs36moAxeAUiHvzRS3uzqGxxB33BnTRBNDKsoDFSGJX0J4bd5b+XyCPdhFOfvn/xhmAcm6d8GALS+139e8d+No8h2QgZy0OVJFp844k4nmz4wew5/+X9DN40ZURYerekbVc58hw1+rTu0uM2jQ0cE2QmEf3qGKHx9UJW8t6IsMzwnrikBH30sYqn2NcBE+/c8JzlLc3PvvenlY0iQkpukI1A5E9GGMR9OS/q+w6FH85zvSgUatOV7Q5lg45QUF+V77DrfX5+niI+NK1g70pRvD8481SAdXrHPB5vK4vQEmJ4pz83IKYHVuPzRnjzYKv1jV33oReyyMqyk44Rsfkxl4i5SJ9z7q/EVmTjvurzD6ofi3Dg0+PL18eTcjuPFdCxSCUFsnr5N9CRHCxHRQpxoZTD7sYD4jDGNygawLvhxcvgKGBZzP53NRCzRFOMFmZsLPLQRaNOsgKRPAohmrn5l8+1xG5ltVauOwAFlKUxk="
-  additionalNTPSources:
-    - clock.cars2.lab
-    - clock-v6.cars2.lab
-  cpuArchitecture: x86_64
-  nmStateConfigLabelSelector:
-    matchLabels:
-      cluster: fiesta
-
----
-# NMStateConfig for network configuration
-apiVersion: agent-install.openshift.io/v1beta1
-kind: NMStateConfig
-metadata:
-  name: fiesta-nmstate
-  namespace: fiesta
-  labels:
-    cluster: fiesta
-spec:
-  config:
-    interfaces:
-      - name: eno1
-        type: ethernet
-        state: down
-      - name: eno2
-        type: ethernet
-        state: down
-      - name: eno3
-        type: ethernet
-        state: up
-        mac-address: "3c:ec:ef:b6:ce:12"
-        ipv4:
-          enabled: true
-          dhcp: false
-          address:
-            - ip: 192.168.38.144
-              prefix-length: 26
-        ipv6:
-          enabled: true
-          dhcp: false
-          address:
-            - ip: 2600:52:7:300::144
-              prefix-length: 64
-      - name: ens6f0
-        type: ethernet
-        state: down
-      - name: ens6f1
-        type: ethernet
-        state: down
-      - name: ens6f2
-        type: ethernet
-        state: down
-      - name: ens6f3
-        type: ethernet
-        state: down
-    dns-resolver:
-      config:
-        server:
-          - 192.168.38.12
-          - 2600:52:7:38::12
-    routes:
-      config:
-        - destination: 0.0.0.0/0
-          next-hop-address: 192.168.38.129
-          next-hop-interface: eno3
-          table-id: 254
-        - destination: ::/0
-          next-hop-address: 2600:52:7:300::1
-          next-hop-interface: eno3
-          table-id: 254
-  interfaces:
-    - name: eno1
-      macAddress: "3c:ec:ef:b6:ce:10"
-    - name: eno2
-      macAddress: "3c:ec:ef:b6:ce:11"
-    - name: eno3
-      macAddress: "3c:ec:ef:b6:ce:12"
-    - name: ens6f0
-      macAddress: "50:7c:6f:30:fc:7c"
-    - name: ens6f1
-      macAddress: "50:7c:6f:30:fc:7d"
-    - name: ens6f2
-      macAddress: "50:7c:6f:30:fc:7e"
-    - name: ens6f3
-      macAddress: "50:7c:6f:30:fc:7f"
-
----
-# ClusterInstance - Main cluster definition
 apiVersion: siteconfig.open-cluster-management.io/v1alpha1
 kind: ClusterInstance
 metadata:
@@ -106,11 +9,14 @@ metadata:
     site: cars2-lab
 spec:
   clusterName: fiesta
+  baseDomain: cars2.lab
+
   pullSecretRef:
     name: assisted-deployment-pull-secret
-  clusterImageSetNameRef: img4.18.23-x86-64-appsub
+
   sshPublicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDd7Jj5iFCWv9IHJK9H+2O3lyPs36moAxeAUiHvzRS3uzqGxxB33BnTRBNDKsoDFSGJX0J4bd5b+XyCPdhFOfvn/xhmAcm6d8GALS+139e8d+No8h2QgZy0OVJFp844k4nmz4wew5/+X9DN40ZURYerekbVc58hw1+rTu0uM2jQ0cE2QmEf3qGKHx9UJW8t6IsMzwnrikBH30sYqn2NcBE+/c8JzlLc3PvvenlY0iQkpukI1A5E9GGMR9OS/q+w6FH85zvSgUatOV7Q5lg45QUF+V77DrfX5+niI+NK1g70pRvD8481SAdXrHPB5vK4vQEmJ4pz83IKYHVuPzRnjzYKv1jV33oReyyMqyk44Rsfkxl4i5SJ9z7q/EVmTjvurzD6ofi3Dg0+PL18eTcjuPFdCxSCUFsnr5N9CRHCxHRQpxoZTD7sYD4jDGNygawLvhxcvgKGBZzP53NRCzRFOMFmZsLPLQRaNOsgKRPAohmrn5l8+1xG5ltVauOwAFlKUxk="
-  baseDomain: cars2.lab
+
+  clusterImageSetNameRef: img4.18.23-x86-64-appsub
 
   # NTP configuration
   additionalNTPSources:
@@ -168,12 +74,13 @@ spec:
         name: gnb-fiesta-cars2-lab-bmc-secret
       bootMACAddress: "3c:ec:ef:b6:ce:12"
       bootMode: UEFI
+      automatedCleaningMode: disabled
 
       # Disk configuration
       rootDeviceHints:
         wwn: "0x500a075138277708"
 
-      # Network interfaces
+      # Network interfaces - these define the MAC addresses for interface matching
       nodeNetwork:
         interfaces:
           - name: eno1
@@ -191,7 +98,7 @@ spec:
           - name: ens6f3
             macAddress: "50:7c:6f:30:fc:7f"
 
-        # Network configuration
+        # Network configuration - this replaces the explicit NMStateConfig
         config:
           interfaces:
             - name: eno1
@@ -212,6 +119,7 @@ spec:
               ipv6:
                 enabled: true
                 dhcp: false
+                autoconf: false
                 address:
                   - ip: 2600:52:7:300::144
                     prefix-length: 64
