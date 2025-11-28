@@ -49,6 +49,17 @@ spec:
   # Architecture
   cpuArchitecture: x86_64
 
+  # Labels applied to ManagedCluster for Day 2 policy binding
+  extraLabels:
+    ManagedCluster:
+      siteName: "fiesta-cars2-lab"
+      common-du: "true"              # Binds to common-ranGen.yaml policies
+      group-smcx12-vse2: ""          # Binds to group-smcx12-vse2.yaml policies
+      sites: "fiesta-cars2-lab"      # Binds to site-specific policies
+
+  # Control installation start (false = proceed immediately)
+  holdInstallation: false
+
   # Extra manifests - will be populated from ConfigMap
   extraManifestsRefs:
     - name: extra-manifests
