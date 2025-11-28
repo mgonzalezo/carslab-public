@@ -6,15 +6,7 @@ configMapGenerator:
   - name: extra-manifests
     namespace: fiesta
     files:
-      - extra-manifests/01-container-mount-ns-and-kubelet-conf-master.yaml
-      - extra-manifests/03-sctp-machine-config-master.yaml
-      - extra-manifests/06-kdump-master.yaml
-      - extra-manifests/07-sriov-related-kernel-args-master.yaml
-      - extra-manifests/08-set-rcu-normal-master.yaml
-      - extra-manifests/09-openshift-marketplace-ns.yaml
-      - extra-manifests/99-crio-disable-wipe-master.yaml
-      - extra-manifests/99-sync-time-once-master.yaml
-      - extra-manifests/03-workload-partitioning.yaml
+      - extra-manifests/master-core-password.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
