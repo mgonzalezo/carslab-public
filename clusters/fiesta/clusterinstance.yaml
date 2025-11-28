@@ -60,9 +60,9 @@ spec:
   # Control installation start (false = proceed immediately)
   holdInstallation: false
 
-  # Extra manifests - will be populated from ConfigMap
-  extraManifestsRefs:
-    - name: extra-manifests
+  # Extra manifests - CANNOT be added to already provisioned clusters
+  # extraManifestsRefs:
+  #   - name: extra-manifests
 
   # Cluster-level templates - using AI (Agent-Based Install)
   templateRefs:
