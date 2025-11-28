@@ -56,6 +56,7 @@ spec:
       common-du: "true"              # Binds to common-ranGen.yaml policies
       group-smcx12-vse2: ""          # Binds to group-smcx12-vse2.yaml policies
       sites: "fiesta-cars2-lab"      # Binds to site-specific policies
+      vseloki: "true"                # Binds to policy-vseloki.yaml for Loki logging secret
 
   # Control installation start (false = proceed immediately)
   holdInstallation: false
