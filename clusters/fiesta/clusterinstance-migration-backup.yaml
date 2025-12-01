@@ -8,11 +8,6 @@ metadata:
     cluster: fiesta
     site: cars2-lab
 spec:
-  # Enable Metal3/Ironic integration for automatic ISO boot on fresh deployments
-  extraAnnotations:
-    InfraEnv:
-      infraenv.agent-install.openshift.io/ironic-agent-image-override: "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:1efd311692f0ceec3ae00995194b81ab40fe0fb64925ff954a023d722c43fca2"
-
   clusterName: fiesta
   baseDomain: cars2.lab
 
