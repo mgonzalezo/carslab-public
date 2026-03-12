@@ -7,7 +7,7 @@ apiVersion: agent-install.openshift.io/v1beta1
 kind: InfraEnv
 metadata:
   name: fiesta
-  namespace: du1-1-fiesta-cars2-lab
+  namespace: fiesta
   labels:
     cluster: fiesta
     site: cars2-lab
@@ -43,7 +43,7 @@ apiVersion: agent-install.openshift.io/v1beta1
 kind: NMStateConfig
 metadata:
   name: fiesta-nmstate
-  namespace: du1-1-fiesta-cars2-lab
+  namespace: fiesta
   labels:
     cluster: fiesta
 spec:

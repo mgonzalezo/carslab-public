@@ -16,7 +16,7 @@ spec:
 
   sshPublicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDd7Jj5iFCWv9IHJK9H+2O3lyPs36moAxeAUiHvzRS3uzqGxxB33BnTRBNDKsoDFSGJX0J4bd5b+XyCPdhFOfvn/xhmAcm6d8GALS+139e8d+No8h2QgZy0OVJFp844k4nmz4wew5/+X9DN40ZURYerekbVc58hw1+rTu0uM2jQ0cE2QmEf3qGKHx9UJW8t6IsMzwnrikBH30sYqn2NcBE+/c8JzlLc3PvvenlY0iQkpukI1A5E9GGMR9OS/q+w6FH85zvSgUatOV7Q5lg45QUF+V77DrfX5+niI+NK1g70pRvD8481SAdXrHPB5vK4vQEmJ4pz83IKYHVuPzRnjzYKv1jV33oReyyMqyk44Rsfkxl4i5SJ9z7q/EVmTjvurzD6ofi3Dg0+PL18eTcjuPFdCxSCUFsnr5N9CRHCxHRQpxoZTD7sYD4jDGNygawLvhxcvgKGBZzP53NRCzRFOMFmZsLPLQRaNOsgKRPAohmrn5l8+1xG5ltVauOwAFlKUxk="
 
-  clusterImageSetNameRef: img4.20.8-x86-64-appsub
+  clusterImageSetNameRef: img4.18.23-x86-64-appsub
 
   # NTP configuration
   additionalNTPSources:
@@ -62,9 +62,8 @@ spec:
   holdInstallation: false
 
   # Extra manifests - CANNOT be added to already provisioned clusters
-  # Reference to ConfigMap containing Day 0 customizations
-  extraManifestsRefs:
-    - name: extra-manifests
+  # extraManifestsRefs:
+  #   - name: extra-manifests
 
   # Cluster-level templates - using AI (Agent-Based Install)
   templateRefs:
@@ -97,48 +96,6 @@ spec:
       # Disk configuration
       rootDeviceHints:
         wwn: "0x500a075138277708"
-
-      # Ignition configuration override for /var/lib/containers partition
-      # Required for image-based upgrade capability
-      # Creates a 60GB partition on the root device for container storage
-      ignitionConfigOverride: |
-        {
-          "ignition": {
-            "version": "3.2.0"
-          },
-          "storage": {
-            "disks": [
-              {
-                "device": "/dev/disk/by-id/wwn-0x500a075138277708",
-                "partitions": [
-                  {
-                    "label": "var-lib-containers",
-                    "sizeMiB": 61440,
-                    "startMiB": 0
-                  }
-                ],
-                "wipeTable": false
-              }
-            ],
-            "filesystems": [
-              {
-                "device": "/dev/disk/by-partlabel/var-lib-containers",
-                "format": "xfs",
-                "path": "/var/lib/containers",
-                "wipeFilesystem": true
-              }
-            ]
-          },
-          "systemd": {
-            "units": [
-              {
-                "contents": "[Unit]\nDescription=Mount /var/lib/containers\nBefore=local-fs.target\n[Mount]\nWhat=/dev/disk/by-partlabel/var-lib-containers\nWhere=/var/lib/containers\nType=xfs\nOptions=defaults\n[Install]\nWantedBy=local-fs.target\n",
-                "enabled": true,
-                "name": "var-lib-containers.mount"
-              }
-            ]
-          }
-        }
 
       # Network interfaces - these define the MAC addresses for interface matching
       nodeNetwork:
