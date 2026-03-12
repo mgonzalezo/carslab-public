@@ -4,3 +4,6 @@ kind: Kustomization
 
 generators:
 - fiesta-siteconfig.yaml
+
+patchesStrategicMerge:
+- infraenv-patch.yaml
