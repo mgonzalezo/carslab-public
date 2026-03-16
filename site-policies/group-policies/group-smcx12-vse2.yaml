@@ -10,6 +10,7 @@ spec:
   bindingRules:
     # These policies will correspond to all clusters with this label:
     group-smcx12-vse2: ""
+  remediationAction: enforce
   mcp: "master"
   sourceFiles:
     - fileName: AcceleratorsNS.yaml

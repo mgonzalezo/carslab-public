@@ -6,8 +6,9 @@ metadata:
   namespace: "ztp-common-cars2"
 spec:
   bindingRules:
-    # These policies will correspond to all clusters with this label:
     common-du-418: "true"
+  remediationAction: enforce
+    # These policies will correspond to all clusters with this label:
   sourceFiles:
     # Create operators policies that will be installed in all clusters
     - fileName: SriovSubscription.yaml
