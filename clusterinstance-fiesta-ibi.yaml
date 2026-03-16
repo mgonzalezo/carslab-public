@@ -2,7 +2,7 @@
 # ClusterInstance for SNO Cluster "fiesta" - IBI (Image-Based Install) Approach
 # Configuration based on fiesta.cars2.lab SiteConfig
 # Reference: https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/edge_computing/ztp-preparing-the-hub-cluster
-# Source: https://github.com/mgonzalezo/carslab-public/tree/main/rhocp-clusters/fiesta.cars2.lab
+# Source: https://github.com/novacain1/carslab-public/tree/main/rhocp-clusters/fiesta.cars2.lab
 
 apiVersion: siteconfig.open-cluster-management.io/v1alpha1
 kind: ClusterInstance
@@ -242,7 +242,7 @@ spec:
 #   8. Monitor: oc get clusterdeployment -n du1-1-fiesta-cars2-lab -w
 #
 # Based on original SiteConfig:
-#   https://github.com/mgonzalezo/carslab-public/tree/main/rhocp-clusters/fiesta.cars2.lab
+#   https://github.com/novacain1/carslab-public/tree/main/rhocp-clusters/fiesta.cars2.lab
 #
 # Official Documentation:
 #   https://docs.redhat.com/en/documentation/openshift_container_platform/4.17/html/edge_computing/ztp-preparing-the-hub-cluster

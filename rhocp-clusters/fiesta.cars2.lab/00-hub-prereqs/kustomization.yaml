@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - bmh-secret.yaml
   - namespace.yaml
-  - pull-secret.yaml
+  #- pull-secret.yaml

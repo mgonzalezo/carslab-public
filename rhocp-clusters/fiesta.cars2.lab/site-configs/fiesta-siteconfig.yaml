@@ -65,6 +65,7 @@ spec:
         bootMode: "UEFI"
         rootDeviceHints:
           wwn: "0x500a075138277708"
+          #wwn: "0x500a075138277708"
         nodeNetwork:
           interfaces:
             - name: eno1
