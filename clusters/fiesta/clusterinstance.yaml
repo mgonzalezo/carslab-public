@@ -16,14 +16,12 @@ spec:
 
   sshPublicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDd7Jj5iFCWv9IHJK9H+2O3lyPs36moAxeAUiHvzRS3uzqGxxB33BnTRBNDKsoDFSGJX0J4bd5b+XyCPdhFOfvn/xhmAcm6d8GALS+139e8d+No8h2QgZy0OVJFp844k4nmz4wew5/+X9DN40ZURYerekbVc58hw1+rTu0uM2jQ0cE2QmEf3qGKHx9UJW8t6IsMzwnrikBH30sYqn2NcBE+/c8JzlLc3PvvenlY0iQkpukI1A5E9GGMR9OS/q+w6FH85zvSgUatOV7Q5lg45QUF+V77DrfX5+niI+NK1g70pRvD8481SAdXrHPB5vK4vQEmJ4pz83IKYHVuPzRnjzYKv1jV33oReyyMqyk44Rsfkxl4i5SJ9z7q/EVmTjvurzD6ofi3Dg0+PL18eTcjuPFdCxSCUFsnr5N9CRHCxHRQpxoZTD7sYD4jDGNygawLvhxcvgKGBZzP53NRCzRFOMFmZsLPLQRaNOsgKRPAohmrn5l8+1xG5ltVauOwAFlKUxk="
 
-  clusterImageSetNameRef: img4.20.8-x86-64-appsub
+  clusterImageSetNameRef: img4.20.14-x86-64-appsub
 
-  # NTP configuration
   additionalNTPSources:
     - clock.cars2.lab
     - clock-v6.cars2.lab
 
-  # Network configuration
   machineNetwork:
     - cidr: 192.168.38.128/26
     - cidr: 2600:52:7:300::0/64
@@ -39,54 +37,24 @@ spec:
     - cidr: fd02::/112
 
   networkType: OVNKubernetes
-
-  # Install config overrides for minimal capabilities
-  installConfigOverrides: '{"capabilities":{"baselineCapabilitySet": "None", "additionalEnabledCapabilities": [ "marketplace", "OperatorLifecycleManager", "NodeTuning", "Ingress" ] }}'
-
-  # Workload partitioning
-  cpuPartitioningMode: AllNodes
-
-  # Architecture
   cpuArchitecture: x86_64
 
-  # Labels applied to ManagedCluster for Day 2 policy binding
-  extraLabels:
-    ManagedCluster:
-      siteName: "fiesta-cars2-lab"
-      common-du: "true"              # Binds to common-ranGen.yaml policies
-      group-smcx12-vse2: ""          # Binds to group-smcx12-vse2.yaml policies
-      sites: "fiesta-cars2-lab"      # Binds to site-specific policies
-      vseloki: "true"                # Binds to policy-vseloki.yaml for Loki logging secret
+  # holdInstallation: true prevents install from starting automatically.
+  # Flip to false (or delete this field) once prerequisites are verified.
+  holdInstallation: true
 
-  # Control installation start (false = proceed immediately)
-  holdInstallation: false
-
-  # Extra manifests - CANNOT be added to already provisioned clusters
-  # Reference to ConfigMap containing Day 0 customizations
-  extraManifestsRefs:
-    - name: extra-manifests
-
-  # Cluster-level templates - using AI (Agent-Based Install)
   templateRefs:
     - name: ai-cluster-templates-v1
       namespace: open-cluster-management
 
-  # Node configuration
   nodes:
     - hostName: du1-1.fiesta.cars2.lab
       role: master
 
-      # Enable Metal3/Ironic integration for automatic ISO boot (node-level)
-      extraAnnotations:
-        InfraEnv:
-          infraenv.agent-install.openshift.io/ironic-agent-image-override: "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:1efd311692f0ceec3ae00995194b81ab40fe0fb64925ff954a023d722c43fca2"
-
-      # Node-level templates - using AI (Agent-Based Install)
       templateRefs:
         - name: ai-node-templates-v1
           namespace: open-cluster-management
 
-      # BMC configuration
       bmcAddress: redfish-virtualmedia://192.168.38.199/redfish/v1/Systems/1/
       bmcCredentialsName:
         name: gnb-fiesta-cars2-lab-bmc-secret
@@ -94,53 +62,9 @@ spec:
       bootMode: UEFI
       automatedCleaningMode: disabled
 
-      # Disk configuration
       rootDeviceHints:
         wwn: "0x500a075138277708"
 
-      # Ignition configuration override for /var/lib/containers partition
-      # Required for image-based upgrade capability
-      # Creates a 60GB partition on the root device for container storage
-      ignitionConfigOverride: |
-        {
-          "ignition": {
-            "version": "3.2.0"
-          },
-          "storage": {
-            "disks": [
-              {
-                "device": "/dev/disk/by-id/wwn-0x500a075138277708",
-                "partitions": [
-                  {
-                    "label": "var-lib-containers",
-                    "sizeMiB": 61440,
-                    "startMiB": 0
-                  }
-                ],
-                "wipeTable": false
-              }
-            ],
-            "filesystems": [
-              {
-                "device": "/dev/disk/by-partlabel/var-lib-containers",
-                "format": "xfs",
-                "path": "/var/lib/containers",
-                "wipeFilesystem": true
-              }
-            ]
-          },
-          "systemd": {
-            "units": [
-              {
-                "contents": "[Unit]\nDescription=Mount /var/lib/containers\nBefore=local-fs.target\n[Mount]\nWhat=/dev/disk/by-partlabel/var-lib-containers\nWhere=/var/lib/containers\nType=xfs\nOptions=defaults\n[Install]\nWantedBy=local-fs.target\n",
-                "enabled": true,
-                "name": "var-lib-containers.mount"
-              }
-            ]
-          }
-        }
-
-      # Network interfaces - these define the MAC addresses for interface matching
       nodeNetwork:
         interfaces:
           - name: eno1
