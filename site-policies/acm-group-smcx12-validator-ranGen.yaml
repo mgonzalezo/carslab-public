@@ -1,0 +1,23 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: group-smcx12-validator
+placementBindingDefaults:
+  name: group-smcx12-validator-placement-binding
+policyDefaults:
+  namespace: ztp-group-cars2
+  placement:
+    labelSelector:
+      group-smcx12: ""
+  remediationAction: inform
+  severity: low
+  evaluationInterval:
+    compliant: 10m
+    noncompliant: 10s
+policies:
+  - name: group-smcx12-validator-du-policy
+    policyAnnotations:
+      ran.openshift.io/ztp-deploy-wave: "100"
+    manifests:
+      - path: source-crs/validatorCRs/informDuValidatorSno.yaml

@@ -1,0 +1,28 @@
+---
+# Site-specific policy for fiesta (du1-1.fiesta.cars2.lab)
+# ClusterLogForwarder → Loki at shadowman.cars2.lab
+# Prerequisite: create remote-logging-secret in openshift-logging on fiesta
+#   oc --kubeconfig ~/.kube/fiesta-kubeconfig create secret generic remote-logging-secret \
+#     -n openshift-logging --from-literal=token=<loki-sa-token>
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: fiesta-cars2-lab
+placementBindingDefaults:
+  name: fiesta-cars2-lab-placement-binding
+policyDefaults:
+  namespace: ztp-site-cars2
+  placement:
+    labelSelector:
+      site: "fiesta-cars2-lab"
+  remediationAction: enforce
+  severity: low
+  evaluationInterval:
+    compliant: 10m
+    noncompliant: 10s
+policies:
+  - name: fiesta-cars2-lab-config-policy
+    policyAnnotations:
+      ran.openshift.io/ztp-deploy-wave: "100"
+    manifests:
+      - path: source-crs/ClusterLogForwarder-loki.yaml

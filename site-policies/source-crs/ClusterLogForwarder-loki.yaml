@@ -1,0 +1,39 @@
+# CLO 6.x (observability.openshift.io/v1) ClusterLogForwarder for Loki forwarding.
+# Prerequisite: create remote-logging-secret in openshift-logging ns on fiesta:
+#   TOKEN=$(oc -n openshift-logging create token --duration=876000h collector)
+#   oc --kubeconfig ~/.kube/fiesta-kubeconfig create secret generic remote-logging-secret \
+#     -n openshift-logging --from-literal=token=$TOKEN
+apiVersion: observability.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: openshift-logging
+  annotations:
+    ran.openshift.io/ztp-deploy-wave: "10"
+spec:
+  filters:
+  - name: add-cluster-name
+    type: openshiftLabels
+    openshiftLabels:
+      clustername: fiesta
+  outputs:
+  - name: loki-infra
+    type: loki
+    loki:
+      url: https://logging-loki-openshift-logging.apps.shadowman.cars2.lab/api/logs/v1/infrastructure
+      authentication:
+        token:
+          from: secret
+          secret:
+            name: remote-logging-secret
+            key: token
+  pipelines:
+  - name: send-infra-logs
+    inputRefs:
+    - infrastructure
+    outputRefs:
+    - loki-infra
+    filterRefs:
+    - add-cluster-name
+  serviceAccount:
+    name: collector
