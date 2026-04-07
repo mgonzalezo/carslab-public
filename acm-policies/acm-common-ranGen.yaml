@@ -1,0 +1,57 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: common-du
+placementBindingDefaults:
+  name: common-du-placement-binding
+policyDefaults:
+  namespace: ztp-common-cars2
+  placement:
+    labelSelector:
+      common-du: "true"
+  remediationAction: enforce
+  severity: low
+  evaluationInterval:
+    compliant: 10m
+    noncompliant: 10s
+policies:
+  - name: common-du-config-policy
+    policyAnnotations:
+      ran.openshift.io/ztp-deploy-wave: "1"
+    manifests:
+      - path: source-crs/ReduceMonitoringFootprint.yaml
+
+  - name: common-du-subscriptions-policy
+    policyAnnotations:
+      ran.openshift.io/ztp-deploy-wave: "2"
+    manifests:
+      - path: source-crs/SriovSubscriptionNS.yaml
+      - path: source-crs/SriovSubscriptionOperGroup.yaml
+      - path: source-crs/SriovSubscription.yaml
+        patches:
+          - spec:
+              source: redhat-operators
+      - path: source-crs/SriovOperatorStatus.yaml
+      - path: source-crs/PtpSubscriptionNS.yaml
+      - path: source-crs/PtpSubscriptionOperGroup.yaml
+      - path: source-crs/PtpSubscription.yaml
+        patches:
+          - spec:
+              source: redhat-operators
+      - path: source-crs/PtpOperatorStatus.yaml
+      - path: source-crs/ClusterLogNS.yaml
+      - path: source-crs/ClusterLogOperGroup.yaml
+      - path: source-crs/ClusterLogSubscription.yaml
+        patches:
+          - spec:
+              channel: stable-6.2
+              source: redhat-operators
+      - path: source-crs/ClusterLogOperatorStatus.yaml
+      - path: source-crs/StorageNS.yaml
+      - path: source-crs/StorageOperGroup.yaml
+      - path: source-crs/StorageSubscription.yaml
+        patches:
+          - spec:
+              source: redhat-operators
+      - path: source-crs/StorageOperatorStatus.yaml

@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ztp-common-cars2
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ztp-group-cars2
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ztp-site-cars2

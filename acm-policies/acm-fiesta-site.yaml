@@ -1,0 +1,39 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: fiesta-cars2-lab
+placementBindingDefaults:
+  name: fiesta-cars2-lab-placement-binding
+policyDefaults:
+  namespace: ztp-site-cars2
+  placement:
+    labelSelector:
+      site: "fiesta-cars2-lab"
+  remediationAction: enforce
+  severity: low
+  evaluationInterval:
+    compliant: 10m
+    noncompliant: 10s
+policies:
+  - name: fiesta-cars2-lab-config-policy
+    policyAnnotations:
+      ran.openshift.io/ztp-deploy-wave: "100"
+    manifests:
+      - path: source-crs/ClusterLogForwarder.yaml
+        patches:
+          - spec:
+              outputs:
+                - name: loki-infra
+                  secret:
+                    name: remote-logging-secret
+                  type: loki
+                  url: https://logging-loki-openshift-logging.apps.shadowman.cars2.lab/api/logs/v1/infrastructure
+              pipelines:
+                - name: send-infra-logs
+                  inputRefs:
+                    - infrastructure
+                  outputRefs:
+                    - loki-infra
+                  labels:
+                    clustername: fiesta
